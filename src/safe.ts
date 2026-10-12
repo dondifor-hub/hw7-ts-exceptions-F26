@@ -9,10 +9,15 @@ ways.
     If the `Expression` object throws an error, pass the error to console.error instead;
     This demonstrates logging an error as a way to handle it.
     **NOTE:** You must catch the error and pass the error object directly to console.error, not a string message.
+
+
+
 6.2. Create a class named `SilentAccount` that extends `ExceptionalAccount` and overrides both the `withdraw` 
     and `deposit` methods to catch any errors and ignore them. The methods should always return 0 if an error 
-    occurred.
-    This demonstrates silencing an error as a way to handle it.
+    occurred. This demonstrates silencing an error as a way to handle it.
+
+
+
 6.3. Create a class named `Laptop` that composes an `OperatingSystem` object with a field named `os`.
     Add a method called `writeFile` that consumes a filename (string) and contents (string), and either creates
     the file if it does not exist or overwrites the contents if it does.
@@ -52,5 +57,88 @@ ways.
 import { ExceptionalAccount } from "./bank";
 import { Expression } from "./math";
 import { OperatingSystem } from "./os";
+import { Screen } from "./screen";
 import { EditableFile } from "./utilities/files";
 import { colorLog } from "./utilities/colorize";
+
+export function safeMath(expression: Expression): void {
+    try {
+        console.log(expression.evaluate());
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export class SilentAccount extends ExceptionalAccount {
+    override deposit(amount: number): number {
+        try {
+            return super.deposit(amount);
+        } catch (error) {
+            return 0;
+        }
+    }
+
+    override withdraw(amount: number): number {
+        try {
+            return super.withdraw(amount);
+        } catch (error) {
+            return 0;
+        }
+    }
+}
+
+export class Laptop {
+    os: OperatingSystem;
+
+    constructor(os: OperatingSystem = new OperatingSystem()) {
+        this.os = os;
+    }
+
+    writeFile(filename: string, contents: string): void {
+        try {
+            const file = this.os.openFile(filename);
+            file.write(contents);
+        } catch (error) {
+                this.os.createFile(new EditableFile(filename, contents));
+            }
+       
+        }
+       
+    
+
+    loadStartupFile(): string {
+        try {
+            return this.os.openFile("startup.txt").getContents();
+        } catch (error) {
+            throw new Error("Startup file not found");
+        }
+    }
+
+}
+export function brightenPoint(screen: Screen, row: number, column: number): void {
+    const pixel = screen.getPixel(row, column);
+    pixel.brightness = pixel.getBrightness() + 1;
+    screen.setPixel(row, column, pixel);
+}
+
+export function colorMath(expression: Expression): void {
+    try {
+        const result = expression.evaluate();
+        colorLog("[blue]", String(result));
+    } catch (error) {
+        colorLog("[yellow]", "Oh no!");
+    } finally {
+        colorLog("[reset]");
+    }
+}
+
+
+
+
+
+    
+    
+
+
+
+

@@ -74,6 +74,22 @@ export class Abs extends Expression {
     }
 }
 
+export class Div extends Expression {
+    constructor(private numerator: Expression, private denominator: Expression) {
+        super(); 
+    }
+
+    evaluate(): number {
+        const denomValue = this.denominator.evaluate();
+        if (denomValue === 0) {
+            throw new Error("Division by zero");
+        }
+        return this.numerator.evaluate() / denomValue;
+    }
+    
+
+}
+
 /**
  * A function that takes a math Expression and evaluates it to a number.
  * @param expression The math Expression to evaluate.

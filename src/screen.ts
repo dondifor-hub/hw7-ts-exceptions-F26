@@ -27,6 +27,12 @@ import { Pixel } from "./pixel";
 export class Screen {
     private pixels: Pixel[][];
     constructor(pixels: Pixel[][]) {
+        // Find the length of the first row of the pixel's object using a for loop to check the length of each row in the 2D array. If any row has a different length, throw an error.
+        for (let i = 1; i < pixels.length; i++) { 
+            if (pixels[i].length !== pixels[0].length) {
+                throw new Error("Input array is not rectangular");
+            }
+        }
         this.pixels = this.deepCopy(pixels);
     }
 
@@ -55,6 +61,10 @@ export class Screen {
      * @returns The pixel at the given row and column.
      */
     getPixel(row: number, col: number): Pixel {
+        // Check if the row is greater than the length of the Pixel of the object, then throw an error.
+        if (row < 0 || row >= this.pixels.length || col < 0 || col >= this.pixels[0].length) {
+            throw new Error(`Index out of bounds: ${row}, ${col}`);
+        }
         return this.pixels[row][col];
     }
 
@@ -65,6 +75,10 @@ export class Screen {
      * @param pixel The pixel to set.
      */
     setPixel(row: number, col: number, pixel: Pixel): void {
+        // Check if the row or column is greater than the length of the Pixel of the object, then throw an error.
+        if (row < 0 || row >= this.pixels.length || col < 0 || col >= this.pixels[0].length) {
+            throw new Error(`Index out of bounds: ${row}, ${col}`);
+        }
         this.pixels[row][col] = pixel.clone();
     }
 }

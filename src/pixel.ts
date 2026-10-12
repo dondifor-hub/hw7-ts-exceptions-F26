@@ -25,27 +25,82 @@ export class Pixel {
     private red: number;
     private green: number;
     private blue: number;
+    
 
     constructor(red: number, green: number, blue: number) {
+      
         this.red = red;
         this.green = green;
         this.blue = blue;
+        
     }
+
+     inRange(value: number): boolean { 
+        if (value > 255 || value < 0) {
+            return false;
+        }
+        return true;
+
+     }
+
+    get brightness(): number { 
+        return (this.red + this.green + this.blue) / 3;
+    }
+
+    set brightness(brightness: number)  {
+        const diff = brightness - this.brightness;
+        this.red += diff;
+        this.green += diff;
+        this.blue += diff;
+    }
+
+    getBrightness(): number {
+        return this.brightness;
+    }
+
+    getRGB(): string { 
+        if (!this.inRange(this.red) || !this.inRange(this.green) || !this.inRange(this.blue)) {
+            throw new Error('Invalid RGB values: ' + this.red + ', ' + this.green + ', ' + this.blue);
+        } 
+        return "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
+    }
+
+      clone(): Pixel {
+        return new Pixel(this.red, this.green, this.blue);
+    }
+}
+
+export function makeColor(color: string): Pixel {
+    if (color === "red") {
+        return new Pixel(255, 0, 0);
+    }
+    else if (color === "green") {
+        return new Pixel(0, 255, 0);
+    }
+    else if (color === "blue") {
+        return new Pixel(0, 0, 255);
+    }
+    else {
+        throw new Error(`Unknown color: ${color}`);
+    }
+}
+   
+
+
 
     /**
      * Create a new Pixel object with the same red, green, and blue values.
      * @returns A new Pixel object with the same red, green, and blue values.
      */
-    clone(): Pixel {
-        return new Pixel(this.red, this.green, this.blue);
-    }
+   
 
     /**
      * Get the RGB color string representation of the pixel.
      * @returns The RGB color string.
      * @throws Error if the red, green, or blue values are outside of the valid range.
      */
-    getRGB(): string {
-        return "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
-    }
-}
+    
+
+
+
+

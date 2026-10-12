@@ -31,8 +31,9 @@ export class OperatingSystem {
             if (file.getName() === name) {
                 return file;
             }
+        
         }
-        return new EditableFile(name, "");
+        throw new Error(`File not found: ${name}`);
     }
 
     /**
@@ -41,6 +42,10 @@ export class OperatingSystem {
      * @throws Error if the file already exists.
      */
     createFile(newFile: EditableFile): void {
+        if (this.files.some(file => file.getName() === newFile.getName())) { // Change .some to for loop
+            throw new Error(`File already exists: ${newFile.getName()}`);
+        }
         this.files.push(newFile);
     }
+    
 }
